@@ -7,11 +7,6 @@ unique_code = uuid.uuid4().hex[:8].upper()
 
 
 class Wallet(models.Model):
-    # welcome_bonus = {
-    #     'RUB': 100,
-    #     'EUR': 3,
-    #     'USD': 3,
-    # }
 
     class Currency(models.TextChoices):
         RUB = "RUB"
@@ -31,9 +26,6 @@ class Wallet(models.Model):
     balance = models.DecimalField(max_digits=14, decimal_places=2, default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_on = models.DateTimeField(auto_now=True)
-
-    def give_welcome_bonus(self):
-        self.balance += self.welcome_bonus[self.currency]
 
     def __str__(self):
         return f"Wallet: {self.name}, Owner: {self.owner.username}"

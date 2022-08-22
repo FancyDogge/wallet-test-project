@@ -1,7 +1,8 @@
 from api.models import Wallet
-from api.serializers import FullWalletSerializer, BasicWalletSerializer
+from api.serializers import FullWalletSerializer, RegistrationSerializer
 from rest_framework import viewsets
 from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
+from django.contrib.auth.models import User
 
 
 class WalletViewSet(viewsets.ModelViewSet):
@@ -13,3 +14,8 @@ class WalletViewSet(viewsets.ModelViewSet):
 
         response = super().create(request, *args, **kwargs)
         return response
+
+
+class RegistrationViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = RegistrationSerializer
