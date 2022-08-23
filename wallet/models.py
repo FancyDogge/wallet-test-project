@@ -1,9 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-import uuid
 
-
-unique_code = uuid.uuid4().hex[:8].upper()
 
 
 class Wallet(models.Model):
@@ -18,9 +15,9 @@ class Wallet(models.Model):
         MASTERCARD = "mastercard"
 
     name = models.CharField(
-        max_length=8, primary_key=True, default=unique_code, editable=False
+        max_length=8, primary_key=True, editable=False, unique=True
     )
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, editable=False)
     type = models.CharField(max_length=10, choices=CardType.choices)
     currency = models.CharField(max_length=3, choices=Currency.choices)
     balance = models.DecimalField(max_digits=14, decimal_places=2, default=0)
@@ -29,3 +26,4 @@ class Wallet(models.Model):
 
     def __str__(self):
         return f"Wallet: {self.name}, Owner: {self.owner.username}"
+
