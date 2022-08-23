@@ -4,12 +4,11 @@ from .models import Wallet
 
 
 class FullWalletSerializer(serializers.ModelSerializer):
-    
     class Meta:
         model = Wallet
         fields = "__all__"
-        read_only_fields = ['balance'] 
+        read_only_fields = ["balance"]
 
     def create(self, validated_data):
-        validated_data['owner'] = self.context['request'].user
+        validated_data["owner"] = self.context["request"].user
         return Wallet.objects.create(**validated_data)
