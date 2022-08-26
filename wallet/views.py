@@ -1,10 +1,7 @@
 from wallet.models import Wallet, Transaction
 from wallet.serializers import FullWalletSerializer, TransactionSerializer
 from rest_framework.viewsets import mixins, GenericViewSet
-from rest_framework.permissions import (
-    IsAuthenticatedOrReadOnly,
-    DjangoModelPermissions,
-)
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from django.db.models import Q
 
 
@@ -18,7 +15,7 @@ class WalletViewSet(
 ):
     queryset = Wallet.objects.all()
     serializer_class = FullWalletSerializer
-    permission_classes = [DjangoModelPermissions, IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     # Overriding method of getting queryset to display (only current user wallets)
     def get_queryset(self):
