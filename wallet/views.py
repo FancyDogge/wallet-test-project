@@ -1,9 +1,7 @@
-from urllib import request
 from wallet.models import Wallet, Transaction
 from wallet.serializers import FullWalletSerializer, TransactionSerializer
 from rest_framework.viewsets import mixins, GenericViewSet
 from rest_framework.permissions import (
-    DjangoObjectPermissions,
     IsAuthenticatedOrReadOnly,
     DjangoModelPermissions,
 )
