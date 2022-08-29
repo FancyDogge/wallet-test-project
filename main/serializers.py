@@ -15,12 +15,16 @@ class RegistrationSerializer(serializers.ModelSerializer):
         password = self.validated_data["password"]
         password2 = self.validated_data["password2"]
 
+        # password match check
         if password == password2:
-            user = User.objects.create(
-                username=self.validated_data["username"],
-                email=self.validated_data["email"],
-            )
-            user.set_password(password)
-            user.save()
-            return user
+            try:
+                user = User.objects.create(
+                    username=self.validated_data["username"],
+                    email=self.validated_data["email"],
+                )
+                user.set_password(password)
+                user.save()
+                return user
+            except Exception as e:
+                return e
         raise serializers.ValidationError({"password": "passwords do not match!"})

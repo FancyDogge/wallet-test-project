@@ -1,8 +1,8 @@
 from django.contrib.auth.models import User
-from rest_framework import viewsets
+from rest_framework.viewsets import mixins, GenericViewSet
 from main.serializers import RegistrationSerializer
 
 
-class RegistrationViewSet(viewsets.ModelViewSet):
+class RegistrationViewSet(mixins.CreateModelMixin, GenericViewSet):
     queryset = User.objects.all()
     serializer_class = RegistrationSerializer
