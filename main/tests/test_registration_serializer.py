@@ -8,7 +8,7 @@ from main.serializers import RegistrationSerializer
     [
         ("user1", "sadjpij@gmail.com", "1234567ASd", "1234567ASd", True), #Valid Input Data
         ("user2", "fasdffs", "1234567ASd", "1234567ASd", False), #Invalid email
-        (123125235, "sadjpij@gmail.com", "1234567ASd", "1234567ASd", False), #only nums username - как исправить?
+        (123125235, "sadjpij@gmail.com", "1234567ASd", "1234567ASd", False), #only nums username - как исправить? validate_name()?
         ("user3", "sadjpij@gmail.com", "", "", False), #Username and no passwords
         ("", "sadjpij@gmail.com", "1234567ASd", "1234567ASd", False), #No Username with passwords
         ("", "", "", "", False), #No Data
