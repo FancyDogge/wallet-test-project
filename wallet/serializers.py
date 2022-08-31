@@ -1,7 +1,6 @@
-import decimal
 from rest_framework import serializers
-from .models import Wallet, Transaction
-from django.db import transaction
+from .models import Wallet
+
 
 
 # Serializer with all Wallet model fields
@@ -41,71 +40,5 @@ class FullWalletSerializer(serializers.ModelSerializer):
         )
 
 
-class TransactionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Transaction
-        fields = "__all__"
-        read_only_fields = ["commision", "status"]
-
-    # Overriding create method of the ModelSerializer
-    def create(self, validated_data):
-        # func to calculate commision
-        def get_commision(transfer_amount, commision_bool):
-            return (
-                transfer_amount * decimal.Decimal(0.10)
-                if commision_bool
-                else decimal.Decimal(0.00)
-            )
-        # getting sender and receiver ids, transfer_amount
-        sender_wallet = Wallet.objects.get(pk=validated_data["sender"].id)
-        receiver_wallet = Wallet.objects.get(pk=validated_data["receiver"].id)
-        transfer_amount = validated_data["transfer_amount"]
-        # commision_bool to determine if transaction will have comission
-        commision_bool = (
-            False if receiver_wallet.owner == sender_wallet.owner else True
-        )
-
-        # check is wallet.owner == current user
-        if sender_wallet.owner == self.context["request"].user:
-            # check is currency is matching
-            if receiver_wallet.currency == sender_wallet.currency:
-                try:
-                    # adding atomicity to our transaction and wallet balances update
-                    with transaction.atomic():
-                    # creating transaction instance
-                        new_transaction = Transaction.objects.create(
-                        sender=sender_wallet,
-                        receiver=receiver_wallet,
-                        transfer_amount=transfer_amount,
-                        commision=get_commision(transfer_amount, commision_bool),
-                        status=Transaction.Status.PAID,
-                        )
-                        sender_balance_after_transac = sender_wallet.balance - (
-                            new_transaction.transfer_amount + new_transaction.commision
-                        )
-                        # updating both balances + check for enough funds
-                        if sender_balance_after_transac >= decimal.Decimal(0.00):
-                            sender_wallet.balance = sender_balance_after_transac
-                        else:
-                            raise serializers.ValidationError(
-                                {"error": "not enough funds for transaction!"}
-                            )
-                        sender_wallet.save()
-                        receiver_wallet.balance += new_transaction.transfer_amount
-                        receiver_wallet.save()
-                    return new_transaction
-                # if smth goes wrong, create and return FAILED transaction
-                except:
-                        failed_transaction = Transaction.objects.create(
-                        sender=sender_wallet,
-                        receiver=receiver_wallet,
-                        transfer_amount=transfer_amount,
-                        commision=get_commision(transfer_amount, commision_bool),
-                        status=Transaction.Status.FAILED,
-                        )
-                        return failed_transaction
-
-            raise serializers.ValidationError(
-                {"error": "wallet currencies are not matching!"}
-            )
-        raise serializers.ValidationError({"error": "wrong sender wallet!"})
+# отдельн сериал под сендер и реси
+# сендер = сериал

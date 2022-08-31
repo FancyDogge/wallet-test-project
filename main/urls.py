@@ -6,6 +6,7 @@ from rest_framework_simplejwt.views import (
 )
 from django.urls import path, include
 import wallet.views
+import transactions.views
 import main.views
 
 
@@ -13,7 +14,7 @@ router = DefaultRouter()
 router.register(r"register", main.views.RegistrationViewSet, basename="register")
 router.register(r"wallets", wallet.views.WalletViewSet, basename="wallets")
 router.register(
-    r"transactions", wallet.views.TransactionViewSet, basename="transactions"
+    r"transactions", transactions.views.TransactionViewSet, basename="transactions"
 )
 
 urlpatterns = [
